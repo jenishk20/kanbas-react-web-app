@@ -14,14 +14,14 @@ export default function Landing() {
       <ul>
         <li>
           <a
-            href="https://github.com/your-username/kanbas-repo"
+            href="https://github.com/jenishk20/kanbas-react-web-app"
             target="_blank"
             rel="noopener noreferrer"
           >
             Kanbas Source Code
           </a>
         </li>
-        {/* Add more repos as needed */}
+        
       </ul>
     </div>
   );
