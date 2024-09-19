@@ -5,8 +5,13 @@ export default function AssignmentEditor() {
       <input id="wd-name" value="A1 - ENV + HTML" />
       <br />
       <br />
-      <textarea id="wd-description">
+      <textarea id="wd-description" rows={10} cols={50}>
         The assignment is available online Submit a link to the landing page of
+        your Web Application running on Netlify. The landing page should include
+        the following : Your full name and section links to each of the lab
+        assignment links to the kanbas application. Links to all relevant source
+        code repos. The Kanbas application should include a link to navigate
+        back to the landing page.
       </textarea>
       <br />
       <table>
@@ -18,7 +23,7 @@ export default function AssignmentEditor() {
             <input id="wd-points" value={100} />
           </td>
         </tr>
-        <br/>
+        <br />
         <tr>
           <td align="right" valign="top">
             <label htmlFor="wd-group">Assignment Group</label>
@@ -31,7 +36,7 @@ export default function AssignmentEditor() {
             </select>
           </td>
         </tr>
-        <br/>
+        <br />
         <tr>
           <td align="right" valign="top">
             <label htmlFor="wd-display-grade-as">Display Grade As</label>
@@ -43,8 +48,8 @@ export default function AssignmentEditor() {
             </select>
           </td>
         </tr>
-        <br/>
-       
+        <br />
+
         <tr>
           <td align="right" valign="top">
             <label htmlFor="wd-submission-type">Submission Type</label>
@@ -56,7 +61,7 @@ export default function AssignmentEditor() {
             </select>
           </td>
         </tr>
-        <br/>
+        <br />
         <tr>
           <td></td>
           <td align="left" valign="top">
@@ -109,7 +114,7 @@ export default function AssignmentEditor() {
             </table>
           </td>
         </tr>
-        <br/>
+        <br />
         <tr>
           <td></td>
           <td align="left" valign="top">
@@ -121,7 +126,7 @@ export default function AssignmentEditor() {
             </tr>
           </td>
         </tr>
-        <br/>
+        <br />
         <tr>
           <td></td>
           <td align="left" valign="top">
@@ -133,7 +138,7 @@ export default function AssignmentEditor() {
             </tr>
           </td>
         </tr>
-        <br/>
+        <br />
         <tr>
           <td></td>
           <td align="left" valign="top">
@@ -164,6 +169,19 @@ export default function AssignmentEditor() {
                 <input type="date" id="wd-available-until" />
               </tr>
             </td>
+          </td>
+        </tr>
+        <br />
+        <tr>
+          <td colSpan={2}>
+            <hr />
+          </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td align="right">
+            <button id="wd-cancel">Cancel</button>
+            <button id="wd-save">Save</button>
           </td>
         </tr>
       </table>
