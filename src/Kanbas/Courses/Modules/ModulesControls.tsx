@@ -3,26 +3,27 @@ import GreenCheckmark from "./GreenCheckmark";
 
 export default function ModulesControls() {
   return (
-    <div id="wd-modules-controls" className="text-nowrap">
-    
-    <button id="wd-collapse-all" className="btn btn-lg btn-secondary me-1 ">
+    <div
+      id="wd-modules-controls"
+      className="d-flex justify-content-end align-items-center text-nowrap"
+    >
+      <button id="wd-collapse-all" className="btn btn-lg btn-secondary me-2">
         Collapse All
       </button>
 
-      <button id="wd-view-progress" className="btn btn-lg btn-secondary me-1 ">
+      <button id="wd-view-progress" className="btn btn-lg btn-secondary me-2">
         View Progress
       </button>
 
-      <button id="wd-add-module-btn" className="btn btn-lg btn-danger me-1 float-end">
+      <button id="wd-add-module-btn" className="btn btn-lg btn-danger me-2">
         <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
         Module
       </button>
 
-      {/* Dropdown for Publish/Unpublish Controls */}
-      <div className="dropdown d-inline me-1 float-end">
+      <div className="dropdown">
         <button
           id="wd-publish-all-btn"
-          className="btn btn-lg btn-secondary dropdown-toggle"
+          className="btn btn-lg btn-secondary dropdown-toggle me-2"
           type="button"
           data-bs-toggle="dropdown"
         >
@@ -50,7 +51,6 @@ export default function ModulesControls() {
               Publish modules only
             </a>
           </li>
-          {/* Unpublish all modules and items */}
           <li>
             <a
               id="wd-unpublish-all-modules-and-items"
@@ -61,7 +61,6 @@ export default function ModulesControls() {
               Unpublish all modules and items
             </a>
           </li>
-          {/* Unpublish modules only */}
           <li>
             <a
               id="wd-unpublish-modules-only"
@@ -74,8 +73,6 @@ export default function ModulesControls() {
           </li>
         </ul>
       </div>
-      
-      
     </div>
   );
 }
