@@ -3,7 +3,7 @@ import ModulesControls from "./ModulesControls";
 import { BsGripVertical } from "react-icons/bs";
 export default function Modules() {
   return (
-    <div>
+    <div  className="me-3">
       <h2>Modules</h2>
       <ModulesControls />
       <br />
