@@ -4,7 +4,7 @@ import { IoCalendarOutline } from "react-icons/io5";
 import { LiaBookSolid, LiaCogSolid } from "react-icons/lia";
 import { FaInbox, FaRegCircleUser } from "react-icons/fa6";
 import { LiaCalendarSolid, LiaInboxSolid, LiaFlaskSolid, LiaHomeSolid } from "react-icons/lia";
-
+import Logo from "../images/Logo.png";
 export default function KanbasNavigation() {
   return (
     <div
@@ -13,6 +13,7 @@ export default function KanbasNavigation() {
       className="list-group rounded-0 position-fixed
     bottom-0 top-0 d-none d-md-block bg-black z-2"
     >
+      <img src = {Logo} alt="Northeastern Logo" width="70" height="70" style={{ marginTop: '20px', marginLeft: '20px' }}  />
       <a
         href="https://www.northeastern.edu/"
         id="wd-neu-link"
