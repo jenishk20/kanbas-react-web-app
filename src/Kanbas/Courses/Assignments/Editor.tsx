@@ -1,7 +1,43 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { useNavigate, useParams } from "react-router";
+import { Link } from "react-router-dom";
+import { assignments } from "../../Database";
 
 export default function AssignmentEditor() {
+  const { cid } = useParams();
+  const { aid } = useParams();
+
+  const assignmentData = assignments.filter(
+    (assignment) => assignment._id === aid && assignment.course === cid
+  );
+
+  const { title, dueDate, description, points, notAvailableUntil } =
+    assignmentData[0];
+
+  const navigate = useNavigate();
+
+  function formatDate(date: any) {
+    const [monthDay, time] = date.split(" at ");
+    const [month, day] = monthDay.split(" ");
+    const [hourMinute, period] = time.split(" ");
+    let [hours, minutes] = hourMinute.split(":");
+
+    const monthIndex = new Date(`${month} 1, 2000`).getMonth() + 1;
+
+    if (period === "PM" && hours !== "12") {
+      hours = String(parseInt(hours, 10) + 12);
+    }
+    if (period === "AM" && hours === "12") {
+      hours = "00";
+    }
+    const year = new Date().getFullYear();
+
+    return `${year}-${String(monthIndex).padStart(2, "0")}-${String(
+      day
+    ).padStart(2, "0")}T${hours}:${minutes}`;
+  }
+
   return (
     <div className="container mt-5">
       <form>
@@ -10,20 +46,17 @@ export default function AssignmentEditor() {
             <label htmlFor="wd-name" className="form-label">
               Assignment Name
             </label>
-            <input
-              id="wd-name"
-              value="A1 - ENV + HTML"
-              className="form-control"
-            />
+            <input id="wd-name" value={title} className="form-control" />
           </div>
         </div>
 
         <div className="row mb-3">
-          <div className="col-sm-10" style = {{width:"100%"}}>
+          <div className="col-sm-10" style={{ width: "100%" }}>
             <textarea
               id="wd-description"
               className="form-control"
               rows={5}
+              value={description}
               defaultValue={`The assignment is available online. Submit a link to the landing page of your Web Application running on Netlify. The landing page should include your full name and section, links to each of the lab assignments, links to the Kanbas application, and links to all relevant source code repositories.`}
             ></textarea>
           </div>
@@ -34,7 +67,12 @@ export default function AssignmentEditor() {
             Points
           </label>
           <div className="col-sm-10">
-            <input id="wd-points" className="form-control" defaultValue={100} />
+            <input
+              id="wd-points"
+              className="form-control"
+              value={points}
+              defaultValue={100}
+            />
           </div>
         </div>
 
@@ -77,7 +115,10 @@ export default function AssignmentEditor() {
           >
             Submission Type
           </label>
-          <div className="col-sm-10" style={{ border: '1px solid lightgray', padding: '10px' }}>
+          <div
+            className="col-sm-10"
+            style={{ border: "1px solid lightgray", padding: "10px" }}
+          >
             <select
               id="wd-submission-type"
               className="form-control"
@@ -151,9 +192,12 @@ export default function AssignmentEditor() {
 
         <div className="row mb-3">
           <label className="col-sm-2 col-form-label">Assign</label>
-          <div className="col-sm-10" style={{ border: '1px solid lightgray', padding: '10px' }}>
+          <div
+            className="col-sm-10"
+            style={{ border: "1px solid lightgray", padding: "10px" }}
+          >
             <div className="row">
-              <div className="col-md-6 mb-2" >
+              <div className="col-md-6 mb-2">
                 <label htmlFor="wd-assign-to">Assign to</label>
                 <input type="text" id="wd-assign-to" className="form-control" />
               </div>
@@ -163,6 +207,7 @@ export default function AssignmentEditor() {
                   type="datetime-local"
                   id="wd-due-date"
                   className="form-control"
+                  value={formatDate(dueDate)}
                 />
               </div>
             </div>
@@ -173,6 +218,7 @@ export default function AssignmentEditor() {
                   type="datetime-local"
                   id="wd-available-from"
                   className="form-control"
+                  value={formatDate(notAvailableUntil)}
                 />
               </div>
               <div className="col-md-6 mb-2">
@@ -189,12 +235,18 @@ export default function AssignmentEditor() {
 
         <div className="row">
           <div className="col-sm-10 offset-sm-2">
-            <button type="button" className="btn btn-secondary me-2">
+            <Link
+              to={`/Kanbas/Courses/${cid}/Assignments/`}
+              className="btn btn-secondary me-2"
+            >
               Cancel
-            </button>
-            <button type="submit" className="btn btn-primary">
+            </Link>
+            <Link
+              to={`/Kanbas/Courses/${cid}/Assignments/`}
+              className="btn btn-primary"
+            >
               Save
-            </button>
+            </Link>
           </div>
         </div>
       </form>
