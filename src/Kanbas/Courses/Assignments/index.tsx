@@ -4,12 +4,14 @@ import { LuNewspaper } from "react-icons/lu";
 import { useNavigate, useParams } from "react-router-dom";
 import { AiOutlineSearch } from "react-icons/ai";
 import { assignments } from "../../Database";
+import { useSelector } from "react-redux";
 export default function Assignments() {
   const navigate = useNavigate();
   const { cid } = useParams();
   console.log(cid);
+  const assignments = useSelector((state:any) => state.assignments.assignments);
   const filteredAssignments = assignments.filter(
-    (assignments) => assignments.course === cid
+    (assignment:any) => assignment.course === cid
   );
   console.log(filteredAssignments);
   return (
@@ -33,7 +35,11 @@ export default function Assignments() {
         >
           + Group
         </button>
-        <button id="wd-add-assignment" className="btn btn-danger  ms-2">
+        <button
+          id="wd-add-assignment"
+          className="btn btn-danger  ms-2"
+          onClick={() => navigate(`/Kanbas/Courses/${cid}/Assignments/Editor`)}
+        >
           + Assignment
         </button>
       </div>
@@ -85,7 +91,7 @@ export default function Assignments() {
                         </p>
                       </div>
                     </div>
-                    <LessonControlButtons />
+                    {/* <LessonControlButtons  /> */}
                   </div>
                 </li>
               </ul>

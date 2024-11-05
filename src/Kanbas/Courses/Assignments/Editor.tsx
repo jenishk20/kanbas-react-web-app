@@ -3,7 +3,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { useNavigate, useParams } from "react-router";
 import { Link } from "react-router-dom";
 import { assignments } from "../../Database";
-
+import { useDispatch } from "react-redux";
+import { addAssignment } from "./reducer";
 export default function AssignmentEditor() {
   const { cid } = useParams();
   const { aid } = useParams();
@@ -13,11 +14,13 @@ export default function AssignmentEditor() {
   );
 
   const { title, dueDate, description, points, notAvailableUntil } =
-    assignmentData[0];
+    assignmentData[0]  || {};
 
   const navigate = useNavigate();
 
   function formatDate(date: any) {
+
+    if(!date) return;
     const [monthDay, time] = date.split(" at ");
     const [month, day] = monthDay.split(" ");
     const [hourMinute, period] = time.split(" ");
@@ -38,6 +41,20 @@ export default function AssignmentEditor() {
     ).padStart(2, "0")}T${hours}:${minutes}`;
   }
 
+  const dispatch = useDispatch();
+  const handleSave = () => {
+    const newAssignment = {
+      _id: aid,
+      course: cid,
+      title,
+      dueDate,
+      description,
+      points,
+      notAvailableUntil,
+    };
+    dispatch(addAssignment(newAssignment)); 
+    navigate(`/Kanbas/Courses/${cid}/Assignments/`); 
+  };
   return (
     <div className="container mt-5">
       <form>
@@ -241,12 +258,13 @@ export default function AssignmentEditor() {
             >
               Cancel
             </Link>
-            <Link
-              to={`/Kanbas/Courses/${cid}/Assignments/`}
-              className="btn btn-primary"
-            >
-              Save
-            </Link>
+            <button
+            type="button"
+            className="btn btn-primary"
+            onClick={handleSave}
+          >
+            Save
+          </button>
           </div>
         </div>
       </form>
