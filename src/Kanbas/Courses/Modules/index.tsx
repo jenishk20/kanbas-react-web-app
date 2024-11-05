@@ -4,10 +4,8 @@ import { BsGripVertical } from "react-icons/bs";
 import { useParams } from "react-router";
 import * as db from "../../Database";
 import React, { useState } from "react";
-import { addModule, editModule, updateModule, deleteModule }
-  from "./reducer";
+import { addModule, editModule, updateModule, deleteModule } from "./reducer";
 import { useSelector, useDispatch } from "react-redux";
-
 
 export default function Modules() {
   const { cid } = useParams();
@@ -16,7 +14,6 @@ export default function Modules() {
 
   const { modules } = useSelector((state: any) => state.modulesReducer);
   const dispatch = useDispatch();
-
 
   return (
     <div className="me-3">
@@ -48,11 +45,10 @@ export default function Modules() {
                       dispatch(
                         updateModule({ ...module, name: e.target.value })
                       )
-
                     }
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
-                        dispatch(updateModule({ ...module, editing: false }))
+                        dispatch(updateModule({ ...module, editing: false }));
                       }
                     }}
                     defaultValue={module.name}
