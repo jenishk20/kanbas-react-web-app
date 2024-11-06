@@ -8,8 +8,8 @@ import image_6 from "../../images/image_6.jpg";
 import image_7 from "../../images/Logo.png";
 import * as db from "../Database";
 import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
-
+import { useSelector, useDispatch } from "react-redux";
+import { enrollInCourse,unenrollFromCourse } from "./enrollmentReducer";
 export default function Dashboard({
   courses,
   course,
@@ -36,11 +36,38 @@ export default function Dashboard({
   ];
 
   const { currentUser } = useSelector((state: any) => state.accountReducer);
-  const { enrollments } = db;
+  const { enrollments } = useSelector((state: any) => state.enrollmentReducer);
   console.log(currentUser);
   console.log(enrollments);
   console.log(courses);
   const role = currentUser?.role;
+
+  const dispatch = useDispatch();
+  const [enrolledOnly, setEnrolledOnly] = useState(true);
+
+  const toggleEnrollments = () => {
+    setEnrolledOnly(!enrolledOnly);
+  };
+
+  const handleEnrollmentToggle = (courseId:any, isEnrolled:any) => {
+    console.log(courseId, isEnrolled);
+    if (isEnrolled) {
+      dispatch(unenrollFromCourse({ courseId, userId: currentUser._id }));
+    } else {
+      dispatch(enrollInCourse({ courseId, userId: currentUser._id }));
+    }
+  };
+
+  const filteredCourses = enrolledOnly
+    ? courses.filter((course) =>
+        enrollments.some(
+          (enrollment : any) =>
+            enrollment.user === currentUser._id &&
+            enrollment.course === course._id
+        )
+      )
+    : courses;
+
   return (
     <div id="wd-dashboard">
       <h1 id="wd-dashboard-title">Dashboard</h1> <hr />
@@ -77,6 +104,14 @@ export default function Dashboard({
           />
         </h5>
       )}
+      {role === "STUDENT" && (
+        <button
+          className="btn btn-primary float-end"
+          onClick={toggleEnrollments}
+        >
+          {enrolledOnly ? "View All Courses" : "View Enrolled Courses"}
+        </button>
+      )}
       <hr />
       <h2 id="wd-dashboard-published">
         Published Courses ({courses.length})
@@ -84,71 +119,136 @@ export default function Dashboard({
       <hr />
       <div id="wd-dashboard-courses" className="row">
         <div className="row row-cols-1 row-cols-md-5 g-4">
-          {courses
-            .filter((course) =>
-              enrollments.some(
-                (enrollment) =>
-                  enrollment.user === currentUser._id &&
-                  enrollment.course === course._id
+          {enrolledOnly &&
+            courses
+              .filter((course) =>
+                enrollments.some(
+                  (enrollment : any) =>
+                    enrollment.user === currentUser._id &&
+                    enrollment.course === course._id
+                )
               )
-            )
-            .map((course, index) => {
-              const imageIndex = index % images.length;
-              const imageSrc = images[imageIndex];
-              return (
-                <div
-                  className="wd-dashboard-course col"
-                  style={{ width: "300px" }}
-                  key={index}
-                >
-                  <div className="card rounded-3 overflow-hidden">
-                    <Link
-                      to={`/Kanbas/Courses/${course._id}/Home`}
-                      className="wd-dashboard-course-link text-decoration-none text-dark"
-                    >
-                      <img src={imageSrc} width="100%" height={160} />
-                      <div className="card-body">
-                        <h5 className="wd-dashboard-course-title card-title">
-                          {course.name}
-                        </h5>
-                        <p
-                          className="wd-dashboard-course-title card-text overflow-y-hidden"
-                          style={{ maxHeight: 100 }}
-                        >
-                          {course.description}
-                        </p>
-                        <button className="btn btn-primary"> Go </button>
-                        {role == "FACULTY" && (
-                          <>
+              .map((course, index) => {
+                const imageIndex = index % images.length;
+                const imageSrc = images[imageIndex];
+                return (
+                  <div
+                    className="wd-dashboard-course col"
+                    style={{ width: "300px" }}
+                    key={index}
+                  >
+                    <div className="card rounded-3 overflow-hidden">
+                      <Link
+                        to={`/Kanbas/Courses/${course._id}/Home`}
+                        className="wd-dashboard-course-link text-decoration-none text-dark"
+                      >
+                        <img src={imageSrc} width="100%" height={160} />
+                        <div className="card-body">
+                          <h5 className="wd-dashboard-course-title card-title">
+                            {course.name}
+                          </h5>
+                          <p
+                            className="wd-dashboard-course-title card-text overflow-y-hidden"
+                            style={{ maxHeight: 100 }}
+                          >
+                            {course.description}
+                          </p>
+                          <button className="btn btn-primary"> Go </button>
+                          {role == "FACULTY" && (
+                            <>
+                              <button
+                                id="wd-edit-course-click"
+                                onClick={(event) => {
+                                  event.preventDefault();
+                                  setCourse(course);
+                                }}
+                                className="btn btn-warning me-2 float-end"
+                              >
+                                Edit
+                              </button>
+
+                              <button
+                                onClick={(event) => {
+                                  event.preventDefault();
+                                  deleteCourse(course._id);
+                                }}
+                                className="btn btn-danger float-end"
+                                id="wd-delete-course-click"
+                              >
+                                Delete
+                              </button>
+                            </>
+                          )}
+                        </div>
+                      </Link>
+                    </div>
+                  </div>
+                );
+              })}
+
+          {!enrolledOnly && (
+            <>
+              {courses.map((course, index) => {
+                const imageIndex = index % images.length;
+                const imageSrc = images[imageIndex];
+                return (
+                  <div
+                    className="wd-dashboard-course col"
+                    style={{ width: "300px" }}
+                    key={index}
+                  >
+                    <div className="card rounded-3 overflow-hidden">
+                      <Link
+                        to={`/Kanbas/Courses/${course._id}/Home`}
+                        className="wd-dashboard-course-link text-decoration-none text-dark"
+                      >
+                        <img src={imageSrc} width="100%" height={160} />
+                        <div className="card-body">
+                          <h5 className="wd-dashboard-course-title card-title">
+                            {course.name}
+                          </h5>
+                          <p
+                            className="wd-dashboard-course-title card-text overflow-y-hidden"
+                            style={{ maxHeight: 100 }}
+                          >
+                            {course.description}
+                          </p>
+                          <button className="btn btn-primary"> Go </button>
+                          {
+                            enrollments.some((enrollment : any)=>{
+                              return enrollment.user === currentUser._id && enrollment.course === course._id
+                            }) ? (
+                              <button
+                                id="wd-edit-course-click"
+                                onClick={(event) => {
+                                  event.preventDefault();
+                                  handleEnrollmentToggle(course._id, true);
+                                }}
+                                className="btn btn-danger me-2 float-end"
+                              >
+                                Unenroll
+                              </button>
+                            ):
                             <button
                               id="wd-edit-course-click"
                               onClick={(event) => {
                                 event.preventDefault();
-                                setCourse(course);
+                                handleEnrollmentToggle(course._id, false);
                               }}
-                              className="btn btn-warning me-2 float-end"
+                              className="btn btn-success me-2 float-end"
                             >
-                              Edit
+                              Enroll
                             </button>
-
-                            <button
-                              onClick={(event) => {
-                                event.preventDefault();
-                                deleteCourse(course._id);
-                              }}
-                              className="btn btn-danger float-end"
-                              id="wd-delete-course-click"
-                            >
-                              Delete
-                            </button>
-                          </>
-                        )}
-                      </div>
-                    </Link>
+                          }
+                        
+                        </div>
+                      </Link>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </>
+          )}
         </div>
       </div>
     </div>
