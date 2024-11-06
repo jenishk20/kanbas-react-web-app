@@ -9,6 +9,7 @@ import { LiaBookSolid, LiaCogSolid } from "react-icons/lia";
 import { FaInbox, FaRegCircleUser } from "react-icons/fa6";
 import * as db from "./Database";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import ProtectedRoute from "./Account/ProtectedRoute";
 import "./styles.css";
 
@@ -43,6 +44,7 @@ export default function Kanbas() {
     );
   };
 
+  
   return (
     <div id="wd-kanbas">
       <KanbasNavigation />
