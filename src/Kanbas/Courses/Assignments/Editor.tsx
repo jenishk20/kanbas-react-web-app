@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useNavigate, useParams } from "react-router";
 import { Link } from "react-router-dom";
@@ -12,15 +12,21 @@ export default function AssignmentEditor() {
   const assignmentData = assignments.filter(
     (assignment) => assignment._id === aid && assignment.course === cid
   );
-
-  const { title, dueDate, description, points, notAvailableUntil } =
-    assignmentData[0]  || {};
-
+  
+  const [title, setTitle] = useState(assignments[0]?.title || "");
+  const [dueDate, setDueDate] = useState(assignments[0]?.dueDate || "");
+  const [description, setDescription] = useState(
+    assignments[0]?.description || ""
+  );
+  const [points, setPoints] = useState(assignments[0]?.points || 0); // Default to 0
+  const [notAvailableUntil, setNotAvailableUntil] = useState(
+    assignments[0]?.notAvailableUntil || ""
+  );
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   function formatDate(date: any) {
-
-    if(!date) return;
+    if (!date) return;
     const [monthDay, time] = date.split(" at ");
     const [month, day] = monthDay.split(" ");
     const [hourMinute, period] = time.split(" ");
@@ -41,19 +47,28 @@ export default function AssignmentEditor() {
     ).padStart(2, "0")}T${hours}:${minutes}`;
   }
 
-  const dispatch = useDispatch();
+  const generateNewId = (assignments : any) => {
+    const maxIdNumber = assignments
+      .map((assignment : any) => parseInt(assignment._id.substring(1)))
+      .reduce((max : any, current : any) => Math.max(max, current), 0);
+    const newIdNumber = maxIdNumber + 1; 
+    return `A${newIdNumber}`;
+  };
+
+  
   const handleSave = () => {
     const newAssignment = {
-      _id: aid,
+      _id: generateNewId(assignments),
       course: cid,
-      title,
-      dueDate,
-      description,
-      points,
-      notAvailableUntil,
+      title: title,
+      dueDate: dueDate,
+      description: description,
+      points: points,
+      notAvailableUntil: notAvailableUntil,
     };
-    dispatch(addAssignment(newAssignment)); 
-    navigate(`/Kanbas/Courses/${cid}/Assignments/`); 
+    dispatch(addAssignment(newAssignment));
+    console.log(newAssignment);
+    navigate(`/Kanbas/Courses/${cid}/Assignments/`);
   };
   return (
     <div className="container mt-5">
@@ -63,7 +78,9 @@ export default function AssignmentEditor() {
             <label htmlFor="wd-name" className="form-label">
               Assignment Name
             </label>
-            <input id="wd-name" value={title} className="form-control" />
+            <input id="wd-name" value={title} 
+            onChange={(e) => setTitle(e.target.value)}
+             className="form-control" />
           </div>
         </div>
 
@@ -74,6 +91,7 @@ export default function AssignmentEditor() {
               className="form-control"
               rows={5}
               value={description}
+              onChange={(e) => setDescription(e.target.value)}
               defaultValue={`The assignment is available online. Submit a link to the landing page of your Web Application running on Netlify. The landing page should include your full name and section, links to each of the lab assignments, links to the Kanbas application, and links to all relevant source code repositories.`}
             ></textarea>
           </div>
@@ -88,6 +106,7 @@ export default function AssignmentEditor() {
               id="wd-points"
               className="form-control"
               value={points}
+              onChange={(e) => setPoints(Number(e.target.value))}
               defaultValue={100}
             />
           </div>
@@ -236,6 +255,7 @@ export default function AssignmentEditor() {
                   id="wd-available-from"
                   className="form-control"
                   value={formatDate(notAvailableUntil)}
+                  onChange={(e) => setNotAvailableUntil(e.target.value)}
                 />
               </div>
               <div className="col-md-6 mb-2">
@@ -259,12 +279,12 @@ export default function AssignmentEditor() {
               Cancel
             </Link>
             <button
-            type="button"
-            className="btn btn-primary"
-            onClick={handleSave}
-          >
-            Save
-          </button>
+              type="button"
+              className="btn btn-primary"
+              onClick={handleSave}
+            >
+              Save
+            </button>
           </div>
         </div>
       </form>

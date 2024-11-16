@@ -9,6 +9,7 @@ const assignmentsSlice = createSlice({
   initialState,
   reducers: {
     addAssignment(state, action) {
+      console.log(action.payload)
       state.assignments.push(action.payload);
     },
     deleteAssignment(state, action) {
