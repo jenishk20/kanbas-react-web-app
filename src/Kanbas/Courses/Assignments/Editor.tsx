@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router";
 import { Link } from "react-router-dom";
 import { assignments } from "../../Database";
 import { useDispatch } from "react-redux";
-import { addAssignment } from "./reducer";
+import { addAssignment, updateAssignment } from "./reducer";
 export default function AssignmentEditor() {
   const { cid } = useParams();
   const { aid } = useParams();
@@ -12,15 +12,17 @@ export default function AssignmentEditor() {
   const assignmentData = assignments.filter(
     (assignment) => assignment._id === aid && assignment.course === cid
   );
-  
-  const [title, setTitle] = useState(assignments[0]?.title || "");
-  const [dueDate, setDueDate] = useState(assignments[0]?.dueDate || "");
+
+  console.log(cid, aid, assignmentData);
+
+  const [title, setTitle] = useState(assignmentData[0]?.title || "");
+  const [dueDate, setDueDate] = useState(assignmentData[0]?.dueDate || "");
   const [description, setDescription] = useState(
-    assignments[0]?.description || ""
+    assignmentData[0]?.description || ""
   );
-  const [points, setPoints] = useState(assignments[0]?.points || 0); // Default to 0
+  const [points, setPoints] = useState(assignmentData[0]?.points || 0); // Default to 0
   const [notAvailableUntil, setNotAvailableUntil] = useState(
-    assignments[0]?.notAvailableUntil || ""
+    assignmentData[0]?.notAvailableUntil || ""
   );
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -47,16 +49,31 @@ export default function AssignmentEditor() {
     ).padStart(2, "0")}T${hours}:${minutes}`;
   }
 
-  const generateNewId = (assignments : any) => {
+  const generateNewId = (assignments: any) => {
     const maxIdNumber = assignments
-      .map((assignment : any) => parseInt(assignment._id.substring(1)))
-      .reduce((max : any, current : any) => Math.max(max, current), 0);
-    const newIdNumber = maxIdNumber + 1; 
+      .map((assignment: any) => parseInt(assignment._id.substring(1)))
+      .reduce((max: any, current: any) => Math.max(max, current), 0);
+    const newIdNumber = maxIdNumber + 1;
     return `A${newIdNumber}`;
   };
 
-  
   const handleSave = () => {
+    if (aid !== "Editor") {
+      console.log("Going to update ", aid,cid);
+      dispatch(
+        updateAssignment({
+          _id: aid,
+          course: cid,
+          title: title,
+          dueDate: dueDate,
+          description: description,
+          points: points,
+          notAvailableUntil: notAvailableUntil,
+        })
+      );
+      navigate(`/Kanbas/Courses/${cid}/Assignments/`);
+      return;
+    }
     const newAssignment = {
       _id: generateNewId(assignments),
       course: cid,
@@ -78,9 +95,12 @@ export default function AssignmentEditor() {
             <label htmlFor="wd-name" className="form-label">
               Assignment Name
             </label>
-            <input id="wd-name" value={title} 
-            onChange={(e) => setTitle(e.target.value)}
-             className="form-control" />
+            <input
+              id="wd-name"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="form-control"
+            />
           </div>
         </div>
 

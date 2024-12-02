@@ -9,7 +9,7 @@ const assignmentsSlice = createSlice({
   initialState,
   reducers: {
     addAssignment(state, action) {
-      console.log(action.payload)
+      console.log(action.payload);
       state.assignments.push(action.payload);
     },
     deleteAssignment(state, action) {
@@ -18,13 +18,10 @@ const assignmentsSlice = createSlice({
       );
     },
     updateAssignment(state, action) {
-      state.assignments = state.assignments.map((assignment) => {
-        if (assignment._id === action.payload._id) {
-          return action.payload;
-        } else {
-          return assignment;
-        }
-      });
+      const index = state.assignments.findIndex(
+        (assignment) => assignment._id === action.payload._id
+      );
+      state.assignments[index] = action.payload;
     },
   },
 });
