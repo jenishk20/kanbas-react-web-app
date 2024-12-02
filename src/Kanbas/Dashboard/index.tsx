@@ -9,6 +9,8 @@ import image_7 from "../../images/Logo.png";
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { enrollInCourse, unenrollFromCourse } from "./enrollmentReducer";
+import { fetchAllCourses } from "../Courses/client";
+import * as courseClient from "../Courses/client";
 export default function Dashboard({
   courses,
   course,
@@ -16,6 +18,7 @@ export default function Dashboard({
   addNewCourse,
   deleteCourse,
   updateCourse,
+  getAllCourses,
 }: {
   courses: any[];
   course: any;
@@ -23,6 +26,7 @@ export default function Dashboard({
   addNewCourse: () => void;
   deleteCourse: (course: any) => void;
   updateCourse: () => void;
+  getAllCourses: () => void;
 }) {
   const images = [
     image_1,
@@ -36,23 +40,24 @@ export default function Dashboard({
 
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const { enrollments } = useSelector((state: any) => state.enrollmentReducer);
-  console.log(currentUser);
-  console.log(enrollments);
-  console.log(courses);
+  
   const role = currentUser?.role;
 
   const dispatch = useDispatch();
   const [enrolledOnly, setEnrolledOnly] = useState(true);
 
   const toggleEnrollments = () => {
+    getAllCourses();
     setEnrolledOnly(!enrolledOnly);
   };
 
-  const handleEnrollmentToggle = (courseId: any, isEnrolled: any) => {
+  const handleEnrollmentToggle =  async (courseId: any, isEnrolled: any) => {
     console.log(courseId, isEnrolled);
     if (isEnrolled) {
+      await courseClient.unenrollUserFromCourse(courseId, currentUser._id);
       dispatch(unenrollFromCourse({ courseId, userId: currentUser._id }));
     } else {
+      await courseClient.enrollUserInCourse(courseId, currentUser._id);
       dispatch(enrollInCourse({ courseId, userId: currentUser._id }));
     }
   };

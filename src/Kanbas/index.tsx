@@ -5,7 +5,7 @@ import KanbasNavigation from "./Navigation";
 import Courses from "./Courses";
 
 import * as db from "./Database";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import ProtectedRoute from "./Account/ProtectedRoute";
 import "./styles.css";
@@ -14,7 +14,6 @@ import * as userClient from "./Account/client";
 import * as courseClient from "./Courses/client";
 
 export default function Kanbas() {
-
   const { currentUser } = useSelector((state: any) => state.accountReducer);
 
   const [courses, setCourses] = useState<any[]>(db.courses);
@@ -29,10 +28,7 @@ export default function Kanbas() {
   const addNewCourse = async () => {
     const newCourse = await userClient.createCourse(course);
 
-    setCourses([
-      ...courses,
-      newCourse,
-    ]);
+    setCourses([...courses, newCourse]);
   };
   const deleteCourse = async (courseId: any) => {
     const status = await courseClient.deleteCourse(courseId);
@@ -54,15 +50,25 @@ export default function Kanbas() {
   const fetchCourses = async () => {
     try {
       const courses = await userClient.findMyCourses();
+      console.log("Inside Fetch call ", courses);
       setCourses(courses);
     } catch (error) {
       console.error(error);
     }
   };
+
+  const fetchAllCourses = async () => {
+    try {
+      const courses = await courseClient.fetchAllCourses();
+      setCourses(courses);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     fetchCourses();
   }, [currentUser]);
-
 
   return (
     <Session>
@@ -83,6 +89,7 @@ export default function Kanbas() {
                     addNewCourse={addNewCourse}
                     deleteCourse={deleteCourse}
                     updateCourse={updateCourse}
+                    getAllCourses = {fetchAllCourses}
                   />
                 </ProtectedRoute>
               }
