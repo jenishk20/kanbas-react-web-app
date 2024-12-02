@@ -6,7 +6,6 @@ import image_4 from "../../images/image_4.jpeg";
 import image_5 from "../../images/image_5.png";
 import image_6 from "../../images/image_6.jpg";
 import image_7 from "../../images/Logo.png";
-import * as db from "../Database";
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { enrollInCourse, unenrollFromCourse } from "./enrollmentReducer";
